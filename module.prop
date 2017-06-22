@@ -1,7 +1,7 @@
-id=template
-name=Template Module
+id=magisk-luoli-font-nougat
+name=Magisk Luoli Font(Nougat)
 version=v1
 versionCode=1
-author=topjohnwu
-description=A short description
+author=muink
+description=Magisk Luoli Font(Nougat)
 template=3
