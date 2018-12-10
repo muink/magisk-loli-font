@@ -1,6 +1,6 @@
 ##########################################################################################
 #
-# Magisk Module Template Config Script
+# Magisk
 # by topjohnwu
 #
 ##########################################################################################
@@ -41,7 +41,7 @@ LATESTARTSERVICE=false
 
 print_modname() {
   ui_print "*******************************"
-  ui_print "     Magisk Module Template    "
+  ui_print "     Magisk Luoli Font(Pie)    "
   ui_print "*******************************"
 }
 
