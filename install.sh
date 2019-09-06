@@ -123,7 +123,7 @@ REPLACE="
 
 print_modname() {
   ui_print "*******************************"
-  ui_print "     Magisk Module Template    "
+  ui_print "      Magisk Luoli Font(Q)     "
   ui_print "*******************************"
 }
 
@@ -134,6 +134,22 @@ on_install() {
   # Extend/change the logic to whatever you want
   ui_print "- Extracting module files"
   unzip -o "$ZIPFILE" 'system/*' -d $MODPATH >&2
+  # --------------------------------------------
+  mkdir -p $MODPATH/system/etc 2>/dev/null
+  cp -af /system/etc/fonts.xml $MODPATH/system/etc/fonts.xml 2>/dev/null
+
+  CONFIG_FILE=$MODPATH/system/etc/fonts.xml
+  FONT_EN=llt_en.ttf
+  FONT_CJK=llt.ttf
+
+  if [ -f "$CONFIG_FILE" ]; then
+    sed -i "s/^    <family name=\"sans-serif\">/    <family name=\"sans-serif\">\n        <font weight=\"100\" style=\"normal\">$FONT_EN<\/font>\n        <font weight=\"300\" style=\"normal\">$FONT_EN<\/font>\n        <font weight=\"400\" style=\"normal\">$FONT_EN<\/font>\n        <font weight=\"500\" style=\"normal\">$FONT_EN<\/font>\n        <font weight=\"900\" style=\"normal\">$FONT_EN<\/font>\n        <font weight=\"700\" style=\"normal\">$FONT_EN<\/font>/g" $CONFIG_FILE
+    sed -i "s/^    <family name=\"sans-serif-condensed\">/    <family name=\"sans-serif-condensed\">\n        <font weight=\"300\" style=\"normal\">$FONT_EN<\/font>\n        <font weight=\"400\" style=\"normal\">$FONT_EN<\/font>\n        <font weight=\"500\" style=\"normal\">$FONT_EN<\/font>\n        <font weight=\"700\" style=\"normal\">$FONT_EN<\/font>/g" $CONFIG_FILE
+    sed -i "s/^    <family lang=\"zh-Hans\">/    <family lang=\"zh-Hans\">\n        <font weight=\"400\" style=\"normal\">$FONT_CJK<\/font>/g" $CONFIG_FILE
+    sed -i "s/^    <family lang=\"zh-Hant,zh-Bopo\">/    <family lang=\"zh-Hant,zh-Bopo\">\n        <font weight=\"400\" style=\"normal\">$FONT_CJK<\/font>/g" $CONFIG_FILE
+    sed -i "s/^    <family lang=\"ja\">/    <family lang=\"ja\">\n        <font weight=\"400\" style=\"normal\">$FONT_CJK<\/font>/g" $CONFIG_FILE
+    sed -i "s/^    <family lang=\"ko\">/    <family lang=\"ko\">\n        <font weight=\"400\" style=\"normal\">$FONT_CJK<\/font>/g" $CONFIG_FILE
+  fi
 }
 
 # Only some special files require specific permissions
