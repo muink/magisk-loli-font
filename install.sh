@@ -123,7 +123,7 @@ REPLACE="
 
 print_modname() {
   ui_print "*******************************"
-  ui_print "      Magisk Luoli Font(Q)     "
+  ui_print "      Magisk Loli Font(Q)      "
   ui_print "*******************************"
 }
 
@@ -139,16 +139,25 @@ on_install() {
   cp -af /system/etc/fonts.xml $MODPATH/system/etc/fonts.xml 2>/dev/null
 
   CONFIG_FILE=$MODPATH/system/etc/fonts.xml
-  FONT_EN=llt_en.ttf
-  FONT_CJK=llt.ttf
+  # CJK=(zh-Hans zh-Hant,zh-Bopo ja ko)
+  FONT_SANS=llt_sans.ttf
+  FONT_CJK=llt_cjk.ttf
 
   if [ -f "$CONFIG_FILE" ]; then
-    sed -i "s/^    <family name=\"sans-serif\">/    <family name=\"sans-serif\">\n        <font weight=\"100\" style=\"normal\">$FONT_EN<\/font>\n        <font weight=\"300\" style=\"normal\">$FONT_EN<\/font>\n        <font weight=\"400\" style=\"normal\">$FONT_EN<\/font>\n        <font weight=\"500\" style=\"normal\">$FONT_EN<\/font>\n        <font weight=\"900\" style=\"normal\">$FONT_EN<\/font>\n        <font weight=\"700\" style=\"normal\">$FONT_EN<\/font>/g" $CONFIG_FILE
-    sed -i "s/^    <family name=\"sans-serif-condensed\">/    <family name=\"sans-serif-condensed\">\n        <font weight=\"300\" style=\"normal\">$FONT_EN<\/font>\n        <font weight=\"400\" style=\"normal\">$FONT_EN<\/font>\n        <font weight=\"500\" style=\"normal\">$FONT_EN<\/font>\n        <font weight=\"700\" style=\"normal\">$FONT_EN<\/font>/g" $CONFIG_FILE
-    sed -i "s/^    <family lang=\"zh-Hans\">/    <family lang=\"zh-Hans\">\n        <font weight=\"400\" style=\"normal\">$FONT_CJK<\/font>/g" $CONFIG_FILE
-    sed -i "s/^    <family lang=\"zh-Hant,zh-Bopo\">/    <family lang=\"zh-Hant,zh-Bopo\">\n        <font weight=\"400\" style=\"normal\">$FONT_CJK<\/font>/g" $CONFIG_FILE
-    sed -i "s/^    <family lang=\"ja\">/    <family lang=\"ja\">\n        <font weight=\"400\" style=\"normal\">$FONT_CJK<\/font>/g" $CONFIG_FILE
-    sed -i "s/^    <family lang=\"ko\">/    <family lang=\"ko\">\n        <font weight=\"400\" style=\"normal\">$FONT_CJK<\/font>/g" $CONFIG_FILE
+    # SansNormal    sed -n "/^    <family name=\"sans-serif\">/,/<\/family>/p" fonts.xml
+    sed -i "/^    <family name=\"sans-serif\">/,/<\/family>/ s/style=\"normal\".*<\/font>$/style=\"normal\">$FONT_SANS<\/font>/" $CONFIG_FILE
+
+    # SansCondensedNormal    sed -n "/^    <family name=\"sans-serif-condensed\">/,/<\/family>/p" fonts.xml
+    sed -i "/^    <family name=\"sans-serif-condensed\">/,/<\/family>/ s/style=\"normal\".*<\/font>$/style=\"normal\">$FONT_SANS<\/font>/" $CONFIG_FILE
+
+    # sed -n "/^    <family lang=\"ko\">$/,+1p" fonts.xml
+    # CJK Sans    sed -n "/^    <family lang=\"ko\">/{n; p;}" fonts.xml
+    # CJK Sans&Serif    sed -n "/^    <family lang=\"ko\">/,/<\/family>/p" fonts.xml
+    # for _lang in "${CJK[@]}"; do
+    for _lang in zh-Hans zh-Hant,zh-Bopo ja ko; do
+      sed -i "/^    <family lang=\"$_lang\">/{n; s/^[ ]*<font.*NotoSansCJK-Regular.ttc<\/font>$/        <font weight=\"400\" style=\"normal\">$FONT_CJK<\/font>/}" $CONFIG_FILE
+      # sed "/^    <family lang=\"$_lang\">/,/<\/family>/ c\    <family lang=\"$_lang\">\n        <font weight=\"400\" style=\"normal\">$FONT_CJK<\/font>\n        <font weight=\"400\" style=\"normal\" fallbackFor=\"serif\">$FONT_CJK<\/font>\n    <\/family>" $CONFIG_FILE
+    done
   fi
 }
 
