@@ -140,23 +140,29 @@ on_install() {
 
   CONFIG_FILE=$MODPATH/system/etc/fonts.xml
   # CJK=(zh-Hans zh-Hant,zh-Bopo ja ko)
-  FONT_SANS=llt_sans.ttf
-  FONT_CJK=llt_cjk.ttf
+  SANS=Loli-Regular.ttf
+  SANS-ITALIC=Loli-Italic.ttf
+  SANS_CJK=LoliCJK-Regular.ttf
 
   if [ -f "$CONFIG_FILE" ]; then
-    # SansNormal    sed -n "/^    <family name=\"sans-serif\">/,/<\/family>/p" fonts.xml
-    sed -i "/^    <family name=\"sans-serif\">/,/<\/family>/ s/style=\"normal\".*<\/font>$/style=\"normal\">$FONT_SANS<\/font>/" $CONFIG_FILE
+    # SansRegular    sed -n "/^    <family name=\"sans-serif\">/,/<\/family>/p" fonts.xml
+    sed -i "/^    <family name=\"sans-serif\">/,/<\/family>/ {/weight=\"400\"/ {\
+	s/style=\"normal\".*<\/font>$/style=\"normal\">$SANS<\/font>/; \
+	s/style=\"italic\".*<\/font>$/style=\"italic\">${SANS-ITALIC}<\/font>/}}" $CONFIG_FILE
 
-    # SansCondensedNormal    sed -n "/^    <family name=\"sans-serif-condensed\">/,/<\/family>/p" fonts.xml
-    sed -i "/^    <family name=\"sans-serif-condensed\">/,/<\/family>/ s/style=\"normal\".*<\/font>$/style=\"normal\">$FONT_SANS<\/font>/" $CONFIG_FILE
+    # SansCondensedRegular    sed -n "/^    <family name=\"sans-serif-condensed\">/,/<\/family>/p" fonts.xml
+    # sed -i "/^    <family name=\"sans-serif-condensed\">/,/<\/family>/ {/weight=\"400\"/ {\
+    # s/style=\"normal\".*<\/font>$/style=\"normal\">$SANS_CONDENSED<\/font>/; \
+    # s/style=\"italic\".*<\/font>$/style=\"italic\">${SANS_CONDENSED-ITALIC}<\/font>/}}" $CONFIG_FILE
 
     # sed -n "/^    <family lang=\"ko\">$/,+1p" fonts.xml
     # CJK Sans    sed -n "/^    <family lang=\"ko\">/{n; p;}" fonts.xml
     # CJK Sans&Serif    sed -n "/^    <family lang=\"ko\">/,/<\/family>/p" fonts.xml
     # for _lang in "${CJK[@]}"; do
     for _lang in zh-Hans zh-Hant,zh-Bopo ja ko; do
-      sed -i "/^    <family lang=\"$_lang\">/{n; s/^[ ]*<font.*NotoSansCJK-Regular.ttc<\/font>$/        <font weight=\"400\" style=\"normal\">$FONT_CJK<\/font>/}" $CONFIG_FILE
-      # sed "/^    <family lang=\"$_lang\">/,/<\/family>/ c\    <family lang=\"$_lang\">\n        <font weight=\"400\" style=\"normal\">$FONT_CJK<\/font>\n        <font weight=\"400\" style=\"normal\" fallbackFor=\"serif\">$FONT_CJK<\/font>\n    <\/family>" $CONFIG_FILE
+      sed -i "/^    <family lang=\"$_lang\">/{n; \
+      s/^[ ]*<font.*NotoSansCJK-Regular.ttc<\/font>$/        <font weight=\"400\" style=\"normal\">$SANS_CJK<\/font>/}" $CONFIG_FILE
+      # sed "/^    <family lang=\"$_lang\">/,/<\/family>/ c\    <family lang=\"$_lang\">\n        <font weight=\"400\" style=\"normal\">$SANS_CJK<\/font>\n        <font weight=\"400\" style=\"normal\" fallbackFor=\"serif\">$SANS_CJK<\/font>\n    <\/family>" $CONFIG_FILE
     done
   fi
 }
