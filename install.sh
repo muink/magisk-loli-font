@@ -135,25 +135,31 @@ on_install() {
   ui_print "- Extracting module files"
   unzip -o "$ZIPFILE" 'system/*' -d $MODPATH >&2
   # --------------------------------------------
-  mkdir -p $MODPATH/system/etc 2>/dev/null
-  cp -af /system/etc/fonts.xml $MODPATH/system/etc/fonts.xml 2>/dev/null
+  ui_print "- Searching in fonts.xml"
+  [[ -d /sbin/.magisk/mirror ]] && MIRRORPATH=/sbin/.magisk/mirror || unset MIRRORPATH
+  FILEPATH=/system/etc/
+  FILE=fonts.xml
+  mkdir -p $MODPATH$FILEPATH 2>/dev/null
+  cp -af $MIRRORPATH$FILEPATH$FILE $MODPATH$FILEPATH$FILE 2>/dev/null
 
-  CONFIG_FILE=$MODPATH/system/etc/fonts.xml
+  ui_print "- Installing fonts..."
   # CJK=(zh-Hans zh-Hant,zh-Bopo ja ko)
   SANS=Loli-Regular.ttf
   SANS-ITALIC=Loli-Italic.ttf
   SANS_CJK=LoliCJK-Regular.ttf
 
-  if [ -f "$CONFIG_FILE" ]; then
+  if [ -f "$MODPATH$FILEPATH$FILE" ]; then
     # SansRegular    sed -n "/^    <family name=\"sans-serif\">/,/<\/family>/p" fonts.xml
     sed -i "/^    <family name=\"sans-serif\">/,/<\/family>/ {/weight=\"400\"/ {\
-	s/style=\"normal\".*<\/font>$/style=\"normal\">$SANS<\/font>/; \
-	s/style=\"italic\".*<\/font>$/style=\"italic\">${SANS-ITALIC}<\/font>/}}" $CONFIG_FILE
+      s/style=\"normal\".*<\/font>$/style=\"normal\">$SANS<\/font>/; \
+      s/style=\"italic\".*<\/font>$/style=\"italic\">${SANS-ITALIC}<\/font>/}}" \
+    $MODPATH$FILEPATH$FILE
 
     # SansCondensedRegular    sed -n "/^    <family name=\"sans-serif-condensed\">/,/<\/family>/p" fonts.xml
     # sed -i "/^    <family name=\"sans-serif-condensed\">/,/<\/family>/ {/weight=\"400\"/ {\
-    # s/style=\"normal\".*<\/font>$/style=\"normal\">$SANS_CONDENSED<\/font>/; \
-    # s/style=\"italic\".*<\/font>$/style=\"italic\">${SANS_CONDENSED-ITALIC}<\/font>/}}" $CONFIG_FILE
+    #   s/style=\"normal\".*<\/font>$/style=\"normal\">$SANS_CONDENSED<\/font>/; \
+    #   s/style=\"italic\".*<\/font>$/style=\"italic\">${SANS_CONDENSED-ITALIC}<\/font>/}}" \
+    # $MODPATH$FILEPATH$FILE
 
     # sed -n "/^    <family lang=\"ko\">$/,+1p" fonts.xml
     # CJK Sans    sed -n "/^    <family lang=\"ko\">/{n; p;}" fonts.xml
@@ -161,8 +167,9 @@ on_install() {
     # for _lang in "${CJK[@]}"; do
     for _lang in zh-Hans zh-Hant,zh-Bopo ja ko; do
       sed -i "/^    <family lang=\"$_lang\">/{n; \
-      s/^[ ]*<font.*NotoSansCJK-Regular.ttc<\/font>$/        <font weight=\"400\" style=\"normal\">$SANS_CJK<\/font>/}" $CONFIG_FILE
-      # sed "/^    <family lang=\"$_lang\">/,/<\/family>/ c\    <family lang=\"$_lang\">\n        <font weight=\"400\" style=\"normal\">$SANS_CJK<\/font>\n        <font weight=\"400\" style=\"normal\" fallbackFor=\"serif\">$SANS_CJK<\/font>\n    <\/family>" $CONFIG_FILE
+        s/weight=\"400\" style=\"normal\".*<\/font>$/weight=\"400\" style=\"normal\">$SANS_CJK<\/font>/}" \
+      $MODPATH$FILEPATH$FILE
+      # sed "/^    <family lang=\"$_lang\">/,/<\/family>/ c\    <family lang=\"$_lang\">\n        <font weight=\"400\" style=\"normal\">$SANS_CJK<\/font>\n        <font weight=\"400\" style=\"normal\" fallbackFor=\"serif\">$SANS_CJK<\/font>\n    <\/family>" $MODPATH$FILEPATH$FILE
     done
   fi
 }

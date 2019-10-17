@@ -1,7 +1,6 @@
 id=magisk-loli-font
 name=Magisk Loli Font(Q)
-version=v2.2
-versionCode=6
+version=v2.3
+versionCode=7
 author=muink
-description=Magisk Loli Font(Q)
-minMagisk=17000
+description=Systemless apply Loli Font
