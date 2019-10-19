@@ -140,25 +140,37 @@ on_install() {
   FILEPATH=/system/etc/
   FILE=fonts.xml
   mkdir -p $MODPATH$FILEPATH 2>/dev/null
-  cp -af $MIRRORPATH$FILEPATH$FILE $MODPATH$FILEPATH$FILE 2>/dev/null
+
+  ui_print "- Unzipping font files..."
+  unzip -oj "$ZIPFILE" fonts.tar.xz -d $TMPDIR >&2
+  FONTSPATH=/system/fonts/
+  mkdir -p $MODPATH$FONTSPATH 2>/dev/null
+  tar -xf $TMPDIR/fonts.tar.xz -C $MODPATH$FONTSPATH 2>/dev/null
 
   ui_print "- Installing fonts..."
   # CJK=(zh-Hans zh-Hant,zh-Bopo ja ko)
-  SANS=Loli-Regular.ttf
-  SANS-ITALIC=Loli-Italic.ttf
+  RAWFONTS=`sed -En '/<family name="sans-serif">/,/<\/family>/ {s|.*<font weight="400" style="normal">(.*)-Regular.ttf<\/font>.*|\1|p}' $MIRRORPATH$FILEPATH$FILE`
+  NEWFONTS='Loli'
   SANS_CJK=LoliCJK-Regular.ttf
 
-  if [ -f "$MODPATH$FILEPATH$FILE" ]; then
-    # SansRegular    sed -n "/^    <family name=\"sans-serif\">/,/<\/family>/p" fonts.xml
-    sed -i "/^    <family name=\"sans-serif\">/,/<\/family>/ {/weight=\"400\"/ {\
-      s/style=\"normal\".*<\/font>$/style=\"normal\">$SANS<\/font>/; \
-      s/style=\"italic\".*<\/font>$/style=\"italic\">${SANS-ITALIC}<\/font>/}}" \
-    $MODPATH$FILEPATH$FILE
+  # Just replace
+  for _font in `ls -1 $MODPATH$FONTSPATH*.ttf | sed -Ene 's|.*/([^/]+)|\1|' -e "s|${NEWFONTS}-||p"`; do
+    ln -s $FONTSPATH${NEWFONTS}-$_font $MODPATH$FONTSPATH${RAWFONTS}-$_font
+  done
 
-    # SansCondensedRegular    sed -n "/^    <family name=\"sans-serif-condensed\">/,/<\/family>/p" fonts.xml
-    # sed -i "/^    <family name=\"sans-serif-condensed\">/,/<\/family>/ {/weight=\"400\"/ {\
-    #   s/style=\"normal\".*<\/font>$/style=\"normal\">$SANS_CONDENSED<\/font>/; \
-    #   s/style=\"italic\".*<\/font>$/style=\"italic\">${SANS_CONDENSED-ITALIC}<\/font>/}}" \
+  # With fonts.xml
+  cp -af $MIRRORPATH$FILEPATH$FILE $MODPATH$FILEPATH$FILE 2>/dev/null
+
+  if [ -f "$MODPATH$FILEPATH$FILE" ]; then
+    # SansAll    sed -n "/^    <family name=\"sans-serif\">/,/<\/family>/p" fonts.xml
+    # sed -i "/^    <family name=\"sans-serif\">/,/<\/family>/ {\
+    #   s|${RAWFONTS}-|${NEWFONTS}-|}" \
+    # $MODPATH$FILEPATH$FILE
+
+    # SansRegular
+    # sed -i "/^    <family name=\"sans-serif\">/,/<\/family>/ {/weight=\"400\"/ {\
+    #   s|style=\"normal\".*</font>$|style=\"normal\">$SANS</font>|; \
+    #   s|style=\"italic\".*</font>$|style=\"italic\">${SANS-ITALIC}</font>|}}" \
     # $MODPATH$FILEPATH$FILE
 
     # sed -n "/^    <family lang=\"ko\">$/,+1p" fonts.xml
@@ -167,7 +179,7 @@ on_install() {
     # for _lang in "${CJK[@]}"; do
     for _lang in zh-Hans zh-Hant,zh-Bopo ja ko; do
       sed -i "/^    <family lang=\"$_lang\">/{n; \
-        s/weight=\"400\" style=\"normal\".*<\/font>$/weight=\"400\" style=\"normal\">$SANS_CJK<\/font>/}" \
+        s|weight=\"400\" style=\"normal\".*</font>$|weight=\"400\" style=\"normal\">$SANS_CJK</font>|}" \
       $MODPATH$FILEPATH$FILE
       # sed "/^    <family lang=\"$_lang\">/,/<\/family>/ c\    <family lang=\"$_lang\">\n        <font weight=\"400\" style=\"normal\">$SANS_CJK<\/font>\n        <font weight=\"400\" style=\"normal\" fallbackFor=\"serif\">$SANS_CJK<\/font>\n    <\/family>" $MODPATH$FILEPATH$FILE
     done
