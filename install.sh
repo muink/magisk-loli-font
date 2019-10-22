@@ -142,10 +142,12 @@ on_install() {
   mkdir -p $MODPATH$FILEPATH 2>/dev/null
 
   ui_print "- Unzipping font files..."
-  unzip -oj "$ZIPFILE" fonts.tar.xz -d $TMPDIR >&2
   FONTSPATH=/system/fonts/
-  mkdir -p $MODPATH$FONTSPATH 2>/dev/null
-  tar -xf $TMPDIR/fonts.tar.xz -C $MODPATH$FONTSPATH 2>/dev/null
+  zipinfo -1 "$ZIPFILE" >/dev/null && (
+    unzip -oj "$ZIPFILE" fonts.tar.xz -d $TMPDIR >&2
+    mkdir -p $MODPATH$FONTSPATH 2>/dev/null
+    tar -xf $TMPDIR/fonts.tar.xz -C $MODPATH$FONTSPATH 2>/dev/null
+  )
 
   ui_print "- Installing fonts..."
   # CJK=(zh-Hans zh-Hant,zh-Bopo ja ko)
