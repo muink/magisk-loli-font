@@ -22,15 +22,21 @@ tar -xf $TMPDIR/fonts.tar.xz -C $MODPATH/$FONTSPATH 2>/dev/null
 
 
 ui_print "- Installing fonts..."
-# CJK=(zh-Hans zh-Hant,zh-Bopo ja ko)
-TARGET=$(sed -En '/<family name="sans-serif">/,/<\/family>/ {s|.*<font weight="400" style="normal">(.*)-Regular.ttf<\/font>.*|\1|p}' $MIRRORPATH/$FILEPATH|cut -f1 -d-)
+# normal
+TARGET=$(sed -En '/<family name="sans-serif">/,/<\/family>/ {s|.*<font weight="[0-9]+" style="[a-z]+"[^\>]*>(.*).ttf.*|\1|p}' $FILEPATH | sort -u)
 SOURCE='Loli'
-SANS_CJK=LoliCJK-Regular.ttf
 
 # Just replace
-for _font in `ls -1 $MODPATH/$FONTSPATH/*.ttf | sed -Ene 's|.*/([^/]+)|\1|' -e "s|${SOURCE}-||p"`; do
-  ln -s ${SOURCE}-$_font $MODPATH/$FONTSPATH/${TARGET}-$_font
+for _t in $TARGET; do
+  if [ -f "$MODPATH/$FONTSPATH/${SOURCE}-${_t##*-}.ttf" ]; then
+    ln -s ${SOURCE}-${_t##*-}.ttf $MODPATH/system/fonts/${_t}.ttf
+  fi
 done
+
+
+ui_print "- Installing CJK fonts..."
+# CJK=(zh-Hans zh-Hant,zh-Bopo ja ko)
+SANS_CJK=LoliCJK-Regular.ttf
 
 # With fonts.xml
 cp -af $MIRRORPATH/$FILEPATH $MODPATH/$FILEPATH 2>/dev/null
