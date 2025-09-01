@@ -22,10 +22,8 @@ tar -xf $TMPDIR/fonts.tar.xz -C $MODPATH/$FONTSPATH 2>/dev/null
 
 
 ui_print "- Installing fonts..."
-# normal
-TARGET=$(sed -En '/<family name="sans-serif">/,/<\/family>/ {s|.*<font weight="[0-9]+" style="[a-z]+"[^\>]*>(.*).ttf.*|\1|p}' $FILEPATH | sort -u)
+TARGET=$(sed -En '/<family name="sans-serif(-condensed)?">/,/<\/family>/ {s|.*<font [^\>]*>(.*).ttf.*|\1|p}' $FILEPATH | sort -u)
 SOURCE='Loli'
-
 # Just replace
 for _t in $TARGET; do
   if [ -f "$MODPATH/$FONTSPATH/${SOURCE}-${_t##*-}.ttf" ]; then
@@ -35,10 +33,9 @@ done
 
 
 ui_print "- Installing CJK fonts..."
+# With fonts.xml
 # CJK=(zh-Hans zh-Hant,zh-Bopo ja ko)
 SANS_CJK=LoliCJK-Regular.ttf
-
-# With fonts.xml
 cp -af $MIRRORPATH/$FILEPATH $MODPATH/$FILEPATH 2>/dev/null
 
 if [ -f "$MODPATH/$FILEPATH" ]; then
