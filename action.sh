@@ -15,7 +15,7 @@ sleep_pause() {
 echo "[+] Repairing symlinks..."
 cd $MODDIR/system/fonts/
 for _t in $(find * -maxdepth 1 -type l); do
-    /system/bin/ln -sf ${SOURCE}-${_t##*-} ${_t}
+    /system/bin/ln -sf ${SOURCE}-${_t#*-} ${_t}
 done
 
 echo "[+] Successfully."
