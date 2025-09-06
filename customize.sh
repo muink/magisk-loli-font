@@ -35,7 +35,8 @@ done
 ui_print "- Installing CJK fonts..."
 # With fonts.xml
 # CJK=(zh-Hans zh-Hant,zh-Bopo ja ko)
-SANS_CJK=LoliCJK-Regular.ttf
+SANS_CJK='LoliCJK-Regular.ttf'
+#SANS_CJK='DFFangYuan-Std-W7.ttf'
 cp -af $MIRRORPATH/$FILEPATH $MODPATH/$FILEPATH 2>/dev/null
 
 if [ -f "$MODPATH/$FILEPATH" ]; then
