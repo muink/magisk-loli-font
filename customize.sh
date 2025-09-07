@@ -27,7 +27,7 @@ SOURCE='Loli'
 # Just replace
 for _t in $TARGET; do
   if [ -f "$MODPATH/$FONTSPATH/${SOURCE}-${_t#*-}.ttf" ]; then
-    ln -s ${SOURCE}-${_t#*-}.ttf $MODPATH/system/fonts/${_t}.ttf
+    ln -s ${SOURCE}-${_t#*-}.ttf $MODPATH/system/fonts/${_t}.ttf.placeholder
   fi
 done
 
