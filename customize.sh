@@ -37,31 +37,19 @@ ui_print "- Installing CJK fonts..."
 # CJK=(zh-Hans zh-Hant,zh-Bopo ja ko)
 SANS_CJK='LoliCJK-Regular.ttf'
 #SANS_CJK='DFFangYuan-Std-W7.ttf'
-cp -af $MIRRORPATH/$FILEPATH $MODPATH/$FILEPATH 2>/dev/null
 
-if [ -f "$MODPATH/$FILEPATH" ]; then
-  # SansAll    sed -n "/^    <family name=\"sans-serif\">/,/<\/family>/p" fonts.xml
-  # sed -i "/^    <family name=\"sans-serif\">/,/<\/family>/ {\
-  #   s|${TARGET}-|${SOURCE}-|}" \
-  # $MODPATH/$FILEPATH
+for _xml in $MIRRORPATH/$FILEPATH; do
+if [ -f "$_xml" ]; then
+  cp -af $_xml $MODPATH/${_xml/$MIRRORPATH/} 2>/dev/null
 
-  # SansRegular
-  # sed -i "/^    <family name=\"sans-serif\">/,/<\/family>/ {/weight=\"400\"/ {\
-  #   s|style=\"normal\".*</font>$|style=\"normal\">$SANS</font>|; \
-  #   s|style=\"italic\".*</font>$|style=\"italic\">${SANS-ITALIC}</font>|}}" \
-  # $MODPATH/$FILEPATH
-
-  # sed -n "/^    <family lang=\"ko\">$/,+1p" fonts.xml
-  # CJK Sans    sed -n "/^    <family lang=\"ko\">/{n; p;}" fonts.xml
-  # CJK Sans&Serif    sed -n "/^    <family lang=\"ko\">/,/<\/family>/p" fonts.xml
-  # for _lang in "${CJK[@]}"; do
   for _lang in zh-Hans zh-Hant,zh-Bopo ja ko; do
-    sed -i "/^    <family lang=\"$_lang\">/{n; \
-      s|weight=\"400\" style=\"normal\".*</font>$|weight=\"400\" style=\"normal\">$SANS_CJK</font>|}" \
-    $MODPATH/$FILEPATH
-    # sed "/^    <family lang=\"$_lang\">/,/<\/family>/ c\    <family lang=\"$_lang\">\n        <font weight=\"400\" style=\"normal\">$SANS_CJK<\/font>\n        <font weight=\"400\" style=\"normal\" fallbackFor=\"serif\">$SANS_CJK<\/font>\n    <\/family>" $MODPATH/$FILEPATH
+    sed -Ei "/^[ \t]*<family lang=\"$_lang\">/,/^[ \t]*<\/family>/{ \
+      /fallback/b; \
+      s|^([ \t]*<font .* style=\"normal\")|\1>$SANS_CJK</font>\n\1|; \
+    }" $MODPATH/${_xml/$MIRRORPATH/}
   done
 fi
+done
 
 
 # Default permissions
