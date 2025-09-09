@@ -10,7 +10,7 @@ ui_print "- Extracting module files"
 unzip -o "$ZIPFILE" -x 'META-INF/*' fonts.tar.xz -d $MODPATH >&2
 # --------------------------------------------
 ui_print "- Searching in fonts.xml"
-[[ -d /sbin/.magisk/mirror ]] && MIRRORPATH=/sbin/.magisk/mirror || unset MIRRORPATH
+#[[ -d /debug_ramdisk/.magisk/mirror ]] && MIRRORPATH=/debug_ramdisk/.magisk/mirror || unset MIRRORPATH
 FILEPATH=/system/etc/fonts.xml
 mkdir -p $MODPATH/$(dirname $FILEPATH) 2>/dev/null
 
