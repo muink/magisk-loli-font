@@ -1,6 +1,6 @@
-id=magisk-loli-font
-name=Magisk Loli Font
-version=v5.2
-versionCode=12
+id=magisk-loli-font-compat
+name=Magisk Loli Font Compat
+version=v5.3
+versionCode=13
 author=muink
 description=Systemless apply Loli Font
