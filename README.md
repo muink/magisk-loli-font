@@ -1,4 +1,4 @@
-# Magisk Loli Font
+# Magisk Loli Font Compat
 
 1. Download [releases](https://github.com/muink/magisk-loli-font/releases)
 2. Add to Magisk Module
