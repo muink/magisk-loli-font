@@ -10,10 +10,14 @@ sleep_pause() {
     fi
 }
 
+FONT_SANSSERIF='Loli-Regular.ttf'
+FONT_CJK='LoliCJK-Regular.ttf'
+
 # Oneplus
-[ ! -f "/system/fonts/SysSans-En-Regular.ttf" ] || /system/bin/ln -sf ${SOURCE}-Regular.ttf SysSans-En-Regular.ttf
-#[ ! -f "/system/fonts/SysSans-Hans-Regular.ttf" ] || /system/bin/ln -sf ${SANS_CJK} SysSans-Hans-Regular.ttf
-#[ ! -f "/system/fonts/SysSans-Hant-Regular.ttf" ] || /system/bin/ln -sf ${SANS_CJK} SysSans-Hant-Regular.ttf
+cd $MODDIR/system/fonts/
+[ ! -f "/system/fonts/SysSans-En-Regular.ttf" ] || /system/bin/ln -sf ${FONT_SANSSERIF} SysSans-En-Regular.ttf
+#[ ! -f "/system/fonts/SysSans-Hans-Regular.ttf" ] || /system/bin/ln -sf ${FONT_CJK} SysSans-Hans-Regular.ttf
+#[ ! -f "/system/fonts/SysSans-Hant-Regular.ttf" ] || /system/bin/ln -sf ${FONT_CJK} SysSans-Hant-Regular.ttf
 
 echo "[+] Successfully."
 echo "[!] You MUST reboot to apply the update."
