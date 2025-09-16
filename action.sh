@@ -2,9 +2,6 @@
 
 MODDIR=${0%/*}
 
-SOURCE='Loli'
-SANS_CJK='LoliCJK-Regular.ttf'
-
 sleep_pause() {
     # APatch and KernelSU needs this
     # but not KSU_NEXT, MMRL
@@ -12,6 +9,9 @@ sleep_pause() {
         sleep 6
     fi
 }
+
+SOURCE='Loli'
+SANS_CJK='LoliCJK-Regular.ttf'
 
 echo "[+] Repairing symlinks..."
 cd $MODDIR/system/fonts/
